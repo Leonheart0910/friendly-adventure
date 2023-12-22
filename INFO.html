@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>결과 확인</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #215B41; /* 배경색 설정 */
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  .quiz-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .navigation {
+    font-size: 2rem;
+    cursor: pointer;
+    user-select: none; /* 텍스트 선택 방지 */
+    padding: 0 20px; /* 좌우 패딩 설정 */
+  }
+  /* '.navigation.disabled' 클래스 제거함 */
+  h1 {
+    margin: 0 20px; /* 좌우 여백 설정 */
+  }
+  .button-container {
+    display: flex;
+    flex-direction: column; /* 버튼을 수직으로 정렬 */
+    align-items: center;
+  }
+  .button {
+    background-color: #A4BEA2; /* 버튼 바탕색 설정 */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100px; /* 버튼 너비 고정 */
+  }
+  .button.active.yes {
+    background-color: #0288D1; /* "예" 버튼 활성화 색 */
+  }
+  .button.active.no {
+    background-color: red; /* "아니오" 버튼 활성화 색 */
+  }
+</style>
+</head>
+<body>
+<div class="quiz-container">
+  <!-- 'disabled' 클래스와 조건부 스타일링 제거 -->
+  <div class="navigation" id="prev" onclick="goToPrevPage()"><</div>
+  <h1>RESULT</h1>
+  <div class="navigation disabled" id="next">></div>
+</div>
+<p>수고하셨습니다 아래의 버튼을 클릭하여 결과를 확인하세요</p>
+<div class="button-container">
+  <button class="button" id="yes" onclick="selectAnswer('yes')">결과 확인</button>
+</div>
+
+<script>
+  async function getCnt() {
+    try {
+      const response = await fetch('/get_cnt');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data.cnt;
+    } catch (error) {
+      console.error('Error getting cnt:', error);
+      return null;  // 오류가 발생하면 null 반환
+    }
+  }
+
+  async function goToResultPage() {
+    const cnt = await getCnt();  // 서버로부터 cnt 값을 가져옵니다.
+
+    // cnt 값이 null이면 오류가 발생한 것이므로 리다이렉트를 중단합니다.
+    if (cnt === null) {
+      alert('서버로부터 결과를 가져오는 데 문제가 발생했습니다.');
+      return;
+    }
+
+    // cnt 값에 따라 사용자를 다른 결과 페이지로 리디렉션합니다.
+    let resultPage = '/RE1';  // 기본값 설정
+    if (cnt === 1) {
+      resultPage = '/RE2';
+    } else if (cnt === 2) {
+      resultPage = '/RE3';
+    } else if (cnt === 3) {
+      resultPage = '/RE4';
+    } else if (cnt >= 4) {
+      resultPage = '/RE5';
+    }
+    // 결과 페이지로 리디렉트
+    window.location.href = resultPage;
+  }
+
+  // 결과 확인 버튼 클릭 이벤트 핸들러 등록
+  document.getElementById('yes').onclick = goToResultPage;
+
+  // 이전 페이지로 이동하는 함수
+  function goToPrevPage() {
+    window.history.back();
+  }
+
+  // 이전 버튼 클릭 이벤트 핸들러 등록
+  document.getElementById('prev').onclick = goToPrevPage;
+
+  // 다음 페이지로 이동하는 함수는 이 예제에는 포함되지 않았습니다.
+</script>
+
+
+</body>
+</html>

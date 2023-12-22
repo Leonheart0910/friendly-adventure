@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스타벅스 기프티콘 이벤트</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #215B41;
+    color: white;
+    text-align: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  }
+  .heading {
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+  .button {
+    background-color: #A4BEA2;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 20px;
+  }
+  .footer {
+    display: flex; /* Make the footer a flex container */
+    align-items: center; /* Vertical alignment */
+    justify-content: center; /* Horizontal alignment */
+    text-align: left;
+    padding: 20px;
+    position: relative;
+    width: 100%;
+  }
+  .event-info {
+    margin-left: 20px; /* Add space between the image and text */
+  }
+  .starbucks-image {
+    background-image: url("https://i.ibb.co/4SKkS9g/Frame-427320661.png");
+    height: 100px;
+    width: 200px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: inline-block;
+  }
+  @media (max-width: 768px) {
+    .footer {
+      flex-direction: column;
+    }
+    .event-info {
+      margin-left: 0;
+      margin-top: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1 class="heading">어디서 나의 세금이 낭비되고 있을까?<br>당신의 부가가치세 신고 점수를 확인해보세요!</h1>
+  <a href="/Q1" class="button">지금 바로 자가 진단 테스트하고,<br>세무사와의 상담으로 신고 부담을 덜어보세요</a>
+</div>
+<div class="footer">
+  <div class="starbucks-image"></div>
+  <p class="event-info">테스트 후, 무료 설문조사를 위한 연락처 남기시면<br>추첨을 통해 10명에게 스타벅스 기프티콘을 드려요!</p>
+</div>
+<script>
+  window.onload = async function resetCnt() {
+    try {
+      await fetch('/reset_cnt', { method: 'POST' });
+    } catch (error) {
+      console.error('Error resetting cnt:', error);
+    }
+  };
+</script>
+</body>
+</html>

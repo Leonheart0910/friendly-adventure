@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>세무사 상담 예약</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #215B41;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  .form-container {
+    background: #2d6b48;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width : 440px
+  }
+  h1 {
+    color: white;
+    margin-bottom: 24px;
+    font-weight: bold;
+    font-size: 1.5em;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  input {
+    font-size: 16px;
+    padding: 10px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  .submit-button {
+    font-weight: bold;
+    color: #215B41;
+    background-color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  .submit-button:hover {
+    background-color: #e1e1e1;
+  }
+  textarea {
+    font-size: 16px;
+    padding: 10px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    height: 120px; /* 세로 크기를 2배 늘림 */
+    resize: vertical; /* 사용자가 세로로만 크기 조정 가능 */
+  }
+
+</style>
+</head>
+<body>
+<div class="form-container">
+  <h1>이름/연락처를 남겨주시면 세무사님께서 더욱 자세한 무료 상담이 가능합니다.</h1>
+  <form id="consultation-form">
+    <input type="text" name="name" placeholder="이름" required>
+    <input type="tel" name="contact" placeholder="연락처" required>
+    <textarea name="content" placeholder="상담 내용" required></textarea>
+    <!-- Updated button -->
+    <button type="button" class="submit-button" onclick="submitForm()">작성</button>
+  </form>
+</div>
+
+<script>
+  function submitForm() {
+    // 입력된 데이터를 가져옵니다.
+    var name = document.querySelector('input[name="name"]').value;
+    var contact = document.querySelector('input[name="contact"]').value;
+    var content = document.querySelector('textarea[name="content"]').value;
+
+    // fetch를 사용하여 서버에 데이터를 전송합니다.
+    fetch('/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name,
+        phone: contact,
+        content: content // content 추가
+      })
+    }).then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        // 성공적으로 전송 후 /thanks 페이지로 리다이렉트
+        window.location.href = '/thanks';
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
+</script>
+</body>
+</html>

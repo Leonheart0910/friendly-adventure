@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>퀴즈 페이지</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #215B41; /* 배경색 설정 */
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  .quiz-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .navigation {
+    font-size: 2rem;
+    cursor: pointer;
+    user-select: none; /* 텍스트 선택 방지 */
+    padding: 0 20px; /* 좌우 패딩 설정 */
+  }
+  /* '.navigation.disabled' 클래스 제거함 */
+  h1 {
+    margin: 0 20px; /* 좌우 여백 설정 */
+  }
+  .button-container {
+    display: flex;
+    flex-direction: column; /* 버튼을 수직으로 정렬 */
+    align-items: center;
+  }
+  .button {
+    background-color: #A4BEA2; /* 버튼 바탕색 설정 */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100px; /* 버튼 너비 고정 */
+  }
+  .button.active.yes {
+    background-color: green; /* "예" 버튼 활성화 색 */
+  }
+  .button.active.no {
+    background-color: red; /* "아니오" 버튼 활성화 색 */
+  }
+</style>
+</head>
+<body>
+<div class="quiz-container">
+  <!-- 'disabled' 클래스와 조건부 스타일링 제거 -->
+  <div class="navigation" id="prev" onclick="goToPrevPage()"><</div>
+  <h1>Q5</h1>
+  <div class="navigation disabled" id="next">></div>
+</div>
+<p>업무무관 지출, 비영업용 차량관련 지출은 신고서에 반영하지 않았나요?</p>
+<div class="button-container">
+  <button class="button" id="yes" onclick="selectAnswer('yes')">예</button>
+  <button class="button" id="no" onclick="selectAnswer('no')">아니오</button>
+</div><script>
+  let selectedAnswer = '';
+  async function updateCnt(increment) {
+    try {
+      const response = await fetch(`/update_cnt/${increment}`, { method: 'POST' });
+      const data = await response.json();
+      console.log('Updated cnt:', data.cnt); // 콘솔에 업데이트된 cnt 출력
+    } catch (error) {
+      console.error('Error updating cnt:', error);
+    }
+  }
+  function selectAnswer(answer) {
+    // 이전에 선택된 버튼의 활성화를 해제
+    if (selectedAnswer) {
+      document.getElementById(selectedAnswer).classList.remove('active', selectedAnswer);
+    }
+    // 새로운 버튼 활성화
+    selectedAnswer = answer;
+    document.getElementById(answer).classList.add('active', answer);
+    // 다음 버튼 활성화
+    document.getElementById('next').classList.remove('disabled');
+  }
+
+
+  async function getCurrentCnt() {
+  try {
+    const response = await fetch('/get_cnt');
+    const data = await response.json();
+    return data.cnt;
+  } catch (error) {
+    console.error('Error getting current cnt:', error);
+    return 0; // 오류 발생시 기본값으로 0 반환
+  }
+}
+  // 이전 페이지로 이동하는 함수
+async function goToPrevPage() {
+  const currentCnt = await getCurrentCnt();
+  if (currentCnt == 4) {
+    updateCnt(-1);
+  }
+  window.history.back();
+}
+  // 다음 페이지로 이동하는 함수
+
+  // 다음 페이지로 이동하는 함수
+  function goToNextPage() {
+    // 선택 여부 검사
+    if (!selectedAnswer) {
+      // 선택되지 않았다면 경고창 표시
+      alert("'예' 또는 '아니오' 를 선택해주세요");
+    } else {
+      // '예'가 선택되었다면 cnt 증가
+      if (selectedAnswer === 'yes') {
+        updateCnt(1);
+      }
+      // 다음 페이지로 이동
+      window.location.href = '/INFO'; // 다음 페이지의 URL로 수정
+    }
+  }
+  // 이벤트 리스너 할당
+  document.getElementById('prev').onclick = goToPrevPage;
+  document.getElementById('next').onclick = goToNextPage;
+</script>
+
+
+</body>
+</html>
